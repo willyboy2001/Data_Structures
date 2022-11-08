@@ -67,6 +67,58 @@ class Graph {
     work(startingVertex);
     console.log(counter);
   }
+  
+  
+  connectedComponents() {
+    const filled = {};
+    const breadthFirstSearch = startingVertex => {
+      const arr = [];
+      let tempList;
+      let removedEle;
+      arr.push(startingVertex);
+      filled[startingVertex] = true;
+      while (arr.length !== 0) {
+        removedEle = arr.shift();
+        tempList = this.adjencencyList[removedEle];
+        for (let i = 0; i < tempList.length; i++) {
+          if (!filled[tempList[i]]) {
+            arr.push(tempList[i]);
+            filled[tempList[i]] = true;
+          }
+        }
+        console.log(removedEle);
+      }
+    };
+
+    for (let i = 0; i < this.vertices.length; i++) {
+      if (!filled[this.vertices[i]]) {
+        breadthFirstSearch(this.vertices[i]);
+        console.log('\n');
+      }
+    }
+  }
+  
+  
+   topologicalOrdering(vertex, filled = {}) {
+    if (filled[vertex]) return;
+    calls++;
+    // inStack[vertex] = true;
+    for (let i = 0; i < this.reverseAdjacencyList[vertex].length; i++) {
+      if (!filled[this.reverseAdjacencyList[vertex][i]]) {
+        this.topologicalOrdering(this.reverseAdjacencyList[vertex][i], filled);
+      }
+    }
+    if (!filled[vertex]) {
+      console.log(vertex);
+      filled[vertex] = true;
+    }
+
+    for (let i = 0; i < this.adjencencyList[vertex].length; i++) {
+      if (!filled[this.adjencencyList[vertex][i]]) {
+        this.topologicalOrdering(this.adjencencyList[vertex][i], filled);
+      }
+    }
+  }
 
   breadthFirstTraversal(startingVertex) {
     let curr;
